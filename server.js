@@ -13,7 +13,7 @@ app.use(requestIP.mw())
 app.use (locale())
 
 
-app.get('/data', function(req, res) {
+app.get('/', function(req, res) {
   var fileName = path.join(__dirname, '/index.html');
   res.sendFile(fileName, function (err) {
     if (err) {
@@ -28,7 +28,7 @@ app.get('/data', function(req, res) {
 
 
 
-app.get("/", function (req, res){
+app.get("/data", function (req, res){
     
     
     var ip = req.clientIp;
