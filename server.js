@@ -27,14 +27,10 @@ app.get('/', function(req, res) {
 });
 
 
-
 app.get("/data", function (req, res){
     
     
-    var ip = req.headers["x-forwarded-for"] || 
-       req.connection.remoteAddress || 
-       req.socket.remoteAddress || 
-       req.connection.socket.remoteAddress;
+    var ip = req.clientIp;
     var language = req.headers["accept-language"].substr(0,5);
     var opSys = os.type();
     var osRelease = os.release();
