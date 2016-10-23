@@ -31,16 +31,18 @@ app.get('/', function(req, res) {
 app.get("/data", function (req, res){
     
     
-    var ip = req.clientIp;
+    var ip = req.headers["x-forwarded-for"];
     var language = req.headers["accept-language"].substr(0,5);
     var opSys = os.type();
     var osRelease = os.release();
+    var userAgent = req.headers["user-agent"].split("(")[1].split(")")[0]
     
     
     var obj = {
-      IP_address:ip,
-      language: language,
-      System: opSys + " " + osRelease+"; "+os.platform() + "; " + os.arch()
+      "IP address":ip,
+      "Language": language,
+      //System: opSys + " " + osRelease+"; "+os.platform() + "; " + os.arch(),
+      "System": userAgent
   }
     
     res.send(JSON.stringify(obj));
