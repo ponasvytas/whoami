@@ -1,13 +1,32 @@
+var path = require("path")
 var express = require("express");
 var app = express();
 var locale = require("locale");
 var requestIP = require("request-ip");
+
+
 const os = require("os");
 
 var port = process.env.PORT || 8080
 
 app.use(requestIP.mw())
 app.use (locale())
+
+
+app.get('/data', function(req, res) {
+  var fileName = path.join(__dirname, '/index.html');
+  res.sendFile(fileName, function (err) {
+    if (err) {
+      console.log(err);
+      res.status(err.status).end();
+    }
+    else {
+      console.log('Sent:', fileName);
+    }
+  });
+});
+
+
 
 app.get("/", function (req, res){
     
