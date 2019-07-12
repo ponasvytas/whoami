@@ -1,63 +1,42 @@
-var path = require("path")
-var express = require("express");
+// server.js
+// where your node app starts
+
+// init project
+var express = require('express');
 var app = express();
-var locale = require("locale");
-var requestIP = require("request-ip");
 
+// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+// so that your API is remotely testable by FCC 
+var cors = require('cors');
+app.use(cors({optionSuccessStatus: 200}));  // some legacy browsers choke on 204
 
-const os = require("os");
+// http://expressjs.com/en/starter/static-files.html
+app.use(express.static('public'));
 
-var port = process.env.PORT || 8080
-
-app.use(requestIP.mw())
-app.use (locale())
-
-
-app.get('/', function(req, res) {
-  var fileName = path.join(__dirname, '/index.html');
-  res.sendFile(fileName, function (err) {
-    if (err) {
-      console.log(err);
-      res.status(err.status).end();
-    }
-    else {
-      console.log('Sent:', fileName);
-    }
-  });
+// http://expressjs.com/en/starter/basic-routing.html
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
 });
 
-
-app.get("/data", function (req, res){
-    
-    
-    var ip = req.clientIp;
-    var language = req.headers["accept-language"].substr(0,5);
-    var opSys = os.type();
-    var osRelease = os.release();
-    var userAgent = req.headers["user-agent"].split("(")[1].split(")")[0]
-    
-    
-    var obj = {
-      "IP address":ip,
-      "Language": language,
-      //System: opSys + " " + osRelease+"; "+os.platform() + "; " + os.arch(),
-      "System": userAgent
-  }
-    
-    res.send(JSON.stringify(obj));
+// your first API endpoint... 
+app.get("/api/hello", function (req, res) {
+  res.json({greeting: 'hello API'});
 });
 
+//=============================================================
+app.get("/api/whoami", (req, res) => {
 
+  const ip = req.headers['x-forwarded-for'].split(",")[0];
+  const language = req.headers['accept-language'];
+  const software = req.headers["user-agent"]
+  
+  res.json({ipadress: ip,
+            language:language,
+            software: software,
+           });
+})
 
-
-
-
-
-
-
-
-
-
-app.listen(port, function () {
-  console.log('Example app listening on port ' + port);
+// listen for requests :)
+var listener = app.listen(process.env.PORT, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
 });
